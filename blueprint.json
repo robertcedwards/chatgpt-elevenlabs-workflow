@@ -1,0 +1,739 @@
+{
+    "name": "Podcast Episode with Norman + Robert | Voice Output",
+    "flow": [
+        {
+            "id": 7,
+            "module": "openai-gpt-3:sendMessageToAssistant",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 1873909
+            },
+            "mapper": {
+                "role": "user",
+                "tools": [
+                    "retrieval"
+                ],
+                "message": "Can you create a script between Robert (podcast host and Son) and Norman where Robert interviews Norman about his early life in West Virginia",
+                "threadId": "thread_6kqr5sQMCuvgOhNXp6FicIf4",
+                "assistantId": "asst_OAQ9RVS83pczCHJZDxHtqUQL"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "expect": {
+                        "model": {
+                            "mode": "chose"
+                        },
+                        "tools": {
+                            "mode": "chose"
+                        },
+                        "fileIds": {
+                            "mode": "chose"
+                        },
+                        "assistantId": {
+                            "mode": "chose",
+                            "label": "Norman Basil Edwards (gpt-4-1106-preview)"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "My OpenAI connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "message",
+                        "type": "text",
+                        "label": "Message",
+                        "required": true
+                    },
+                    {
+                        "name": "role",
+                        "type": "hidden",
+                        "label": "Role"
+                    },
+                    {
+                        "name": "assistantId",
+                        "type": "select",
+                        "label": "Assistant",
+                        "required": true
+                    },
+                    {
+                        "name": "threadId",
+                        "type": "text",
+                        "label": "Thread ID"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model"
+                    },
+                    {
+                        "name": "fileIds",
+                        "spec": {
+                            "name": "value",
+                            "type": "select",
+                            "label": "File ID",
+                            "dynamic": true,
+                            "options": []
+                        },
+                        "type": "array",
+                        "label": "File IDs",
+                        "validate": {
+                            "maxItems": 10
+                        }
+                    },
+                    {
+                        "name": "tools",
+                        "type": "select",
+                        "label": "Tools",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "retrieval",
+                                "code_interpreter"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "instructions",
+                        "type": "text",
+                        "label": "Instructions"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 12,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 8,
+                            "module": "regexp:Parser",
+                            "version": 1,
+                            "parameters": {
+                                "global": true,
+                                "pattern": "\\*\\*Robert:\\*\\*([\\s\\S]*?)\\n\\*\\*Norman:\\*\\*",
+                                "multiline": true,
+                                "sensitive": true,
+                                "singleline": false,
+                                "continueWhenNoRes": false,
+                                "ignoreInfiniteLoopsWhenGlobal": false
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{7.id}}",
+                                            "b": "1",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "text": "{{7.content[].text.value}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": 0
+                                },
+                                "restore": {},
+                                "parameters": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "continueWhenNoRes",
+                                        "type": "boolean",
+                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "ignoreInfiniteLoopsWhenGlobal",
+                                        "type": "boolean",
+                                        "label": "Ignore errors when there is an infinite search loop",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "$1",
+                                        "type": "text",
+                                        "label": "$1"
+                                    },
+                                    {
+                                        "name": "i",
+                                        "type": "uinteger",
+                                        "label": "i"
+                                    },
+                                    {
+                                        "name": "__IMTMATCH__",
+                                        "type": "any",
+                                        "label": "Fallback Match"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "module": "elevenlabs:createTextToSpeech",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1873946
+                            },
+                            "filter": {
+                                "name": "Robert",
+                                "conditions": []
+                            },
+                            "mapper": {
+                                "text": "{{8.`$1`}}",
+                                "model_id": "eleven_multilingual_v2",
+                                "voice_id": "Xp56iS9YWmw7TqFXPZwo",
+                                "voice_settings": {
+                                    "stability": ".6",
+                                    "similarity_boost": ".6"
+                                },
+                                "optimize_streaming_latency": "0"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "model_id": {
+                                            "mode": "chose",
+                                            "label": "Eleven Multilingual v2"
+                                        },
+                                        "voice_id": {
+                                            "mode": "chose",
+                                            "label": "cloned/Robert C Edwards"
+                                        },
+                                        "optimize_streaming_latency": {
+                                            "mode": "chose",
+                                            "label": "Default Mode"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "elevenlabs"
+                                            },
+                                            "label": "My ElevenLabs connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:elevenlabs",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "voice_id",
+                                        "type": "select",
+                                        "label": "Voice",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "model_id",
+                                        "type": "select",
+                                        "label": "Model",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "voice_settings",
+                                        "spec": [
+                                            {
+                                                "name": "stability",
+                                                "type": "number",
+                                                "label": "Stability",
+                                                "validate": {
+                                                    "max": 1,
+                                                    "min": 0
+                                                }
+                                            },
+                                            {
+                                                "name": "similarity_boost",
+                                                "type": "number",
+                                                "label": "Similarity Boost",
+                                                "validate": {
+                                                    "max": 1,
+                                                    "min": 0
+                                                }
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Voice Settings"
+                                    },
+                                    {
+                                        "name": "optimize_streaming_latency",
+                                        "type": "select",
+                                        "label": "Optimize Streaming Latency",
+                                        "validate": {
+                                            "enum": [
+                                                "0",
+                                                "1",
+                                                "2",
+                                                "3",
+                                                "4"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 10,
+                            "module": "filestack:uploadAFile",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1874070
+                            },
+                            "mapper": {
+                                "data": "{{9.data}}",
+                                "select": "data",
+                                "filename": "robert1_{{8.i}}.mp3"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "select": {
+                                            "label": "By File Data"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "filestack"
+                                            },
+                                            "label": "My Filestack connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:filestack",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Upload a File",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "url",
+                                                "data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "filename",
+                                        "type": "text",
+                                        "label": "File Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 13,
+                            "module": "regexp:Parser",
+                            "version": 1,
+                            "parameters": {
+                                "global": true,
+                                "pattern": "\\*\\*Norman:\\*\\*([\\s\\S]*?)\\n\\*\\*Robert:\\*\\*",
+                                "multiline": true,
+                                "sensitive": true,
+                                "singleline": false,
+                                "continueWhenNoRes": false,
+                                "ignoreInfiniteLoopsWhenGlobal": false
+                            },
+                            "mapper": {
+                                "text": "{{7.content[].text.value}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": 300
+                                },
+                                "restore": {},
+                                "parameters": [
+                                    {
+                                        "name": "pattern",
+                                        "type": "text",
+                                        "label": "Pattern",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "global",
+                                        "type": "boolean",
+                                        "label": "Global match",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "sensitive",
+                                        "type": "boolean",
+                                        "label": "Case sensitive",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "multiline",
+                                        "type": "boolean",
+                                        "label": "Multiline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "singleline",
+                                        "type": "boolean",
+                                        "label": "Singleline",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "continueWhenNoRes",
+                                        "type": "boolean",
+                                        "label": "Continue the execution of the route even if the module finds no matches",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "ignoreInfiniteLoopsWhenGlobal",
+                                        "type": "boolean",
+                                        "label": "Ignore errors when there is an infinite search loop",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "$1",
+                                        "type": "text",
+                                        "label": "$1"
+                                    },
+                                    {
+                                        "name": "i",
+                                        "type": "uinteger",
+                                        "label": "i"
+                                    },
+                                    {
+                                        "name": "__IMTMATCH__",
+                                        "type": "any",
+                                        "label": "Fallback Match"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 14,
+                            "module": "elevenlabs:createTextToSpeech",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1873946
+                            },
+                            "filter": {
+                                "name": "Norman",
+                                "conditions": []
+                            },
+                            "mapper": {
+                                "text": "{{13.`$1`}}",
+                                "model_id": "eleven_multilingual_v2",
+                                "voice_id": "tbX8r2lSlU9IzwebPQY4",
+                                "voice_settings": {
+                                    "stability": ".6",
+                                    "similarity_boost": ".6"
+                                },
+                                "optimize_streaming_latency": "0"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "model_id": {
+                                            "mode": "chose",
+                                            "label": "Eleven Multilingual v2"
+                                        },
+                                        "voice_id": {
+                                            "mode": "chose",
+                                            "label": "cloned/Norman Basil Edwards - Clean"
+                                        },
+                                        "optimize_streaming_latency": {
+                                            "mode": "chose",
+                                            "label": "Default Mode"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "elevenlabs"
+                                            },
+                                            "label": "My ElevenLabs connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:elevenlabs",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "voice_id",
+                                        "type": "select",
+                                        "label": "Voice",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "model_id",
+                                        "type": "select",
+                                        "label": "Model",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": "Text",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "voice_settings",
+                                        "spec": [
+                                            {
+                                                "name": "stability",
+                                                "type": "number",
+                                                "label": "Stability",
+                                                "validate": {
+                                                    "max": 1,
+                                                    "min": 0
+                                                }
+                                            },
+                                            {
+                                                "name": "similarity_boost",
+                                                "type": "number",
+                                                "label": "Similarity Boost",
+                                                "validate": {
+                                                    "max": 1,
+                                                    "min": 0
+                                                }
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Voice Settings"
+                                    },
+                                    {
+                                        "name": "optimize_streaming_latency",
+                                        "type": "select",
+                                        "label": "Optimize Streaming Latency",
+                                        "validate": {
+                                            "enum": [
+                                                "0",
+                                                "1",
+                                                "2",
+                                                "3",
+                                                "4"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "module": "filestack:uploadAFile",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 1874070
+                            },
+                            "mapper": {
+                                "data": "{{14.data}}",
+                                "select": "data",
+                                "filename": "norman1_ {{13.i}}.mp3"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "select": {
+                                            "label": "By File Data"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "filestack"
+                                            },
+                                            "label": "My Filestack connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:filestack",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "select",
+                                        "type": "select",
+                                        "label": "Upload a File",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "url",
+                                                "data"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "filename",
+                                        "type": "text",
+                                        "label": "File Name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "data",
+                                        "type": "buffer",
+                                        "label": "Data",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us1.make.com"
+    }
+}
